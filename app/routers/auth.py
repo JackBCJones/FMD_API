@@ -7,20 +7,20 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 router = APIRouter(tags=['Authentification'])
 
 @router.post('/login', response_model=schemas.Token)
-def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+def login(uni_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
 
-# going to return username and password
+    # going to return username and password
 
-    user = db.query(models.User).filter(models.User.email == user_credentials.username).first()
+    uni = db.query(models.Uni).filter(models.Uni.name == uni_credentials.username).first()
 
-    if not user:
+    if not uni:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
                         detail='Invalid Credentials')
 
-    if not utils.verify(user_credentials.password, user.password):
+    if not utils.verify(uni_credentials.password, uni.password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
                         detail='Invalid Credentials')
     
-    access_token = oauth2.create_access_token(data= {"user_id": user.id})
+    access_token = oauth2.create_access_token(data= {"uni_id": uni.id})
     return {"access_token": access_token, "token_type": "bearer"}
     

@@ -18,6 +18,9 @@ router = APIRouter(
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.UniOut)
 def create_uni(uni: schemas.UniCreate, db: Session = Depends(get_db)):
 
+    hashed_password = utils.hash(uni.password)
+    uni.password = hashed_password
+
     new_uni = models.Uni(**uni.dict())
     db.add(new_uni)
     db.commit()
@@ -35,11 +38,11 @@ def get_uni(id: int, db: Session = Depends(get_db)):
     return uni
 
 @router.get("/", response_model=List[schemas.UniOut])
-def get_uni(db: Session = Depends(get_db)):
+def get_unis(db: Session = Depends(get_db)):
     
     all_unis = db.query(models.Uni).all()
 
     if not all_unis:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
-                            detail=f"uni with id: {id} was not found")
+                            detail=f"there are no universities available")
     return all_unis

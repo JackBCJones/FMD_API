@@ -29,7 +29,7 @@ def verify_access_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
 
-        id: str = payload.get("user_id")
+        id: str = payload.get("uni_id")
 
         if not id:
             raise credentials_exception
@@ -43,5 +43,5 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
                     detail=f"Could not validate credentials", headers={"www-Authenticate": "Bearer"})
 
     token = verify_access_token(token, credentials_exception)
-    user = db.query(models.User).filter(models.User.id == token.id).first()
-    return user
+    uni = db.query(models.Uni).filter(models.Uni.id == token.id).first()
+    return uni

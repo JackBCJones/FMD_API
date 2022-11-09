@@ -22,18 +22,26 @@ class Course(CourseBase):
     class Config:
         orm_mode = True
 
+class CourseOut(CourseBase):
+    id: int
+    link: str
+    owner_id : int
+    
+
+    class Config:
+        orm_mode = True
+
 
 
 class CreateCourse(BaseModel):
     title: str
     requirements: str
     link : str
-    owner_id : int
 
 class UpdateCourse(BaseModel):
     title: str
-    content: str
-    published: bool = True
+    requirements: str
+    link: str
 
 # can also make use of inheritance 
 # a class that inherites from another has all of its schemas 
@@ -41,11 +49,15 @@ class UpdateCourse(BaseModel):
 class CourseCreate(CourseBase):
     pass
 
+
+
 class UniOut(BaseModel):
     id: int
     name: str
     img: str
     nickname: str
+    color: str
+    text_color: str
 
     class Config:
         orm_mode = True
@@ -61,8 +73,8 @@ class UniCreate(BaseModel):
 
 
 
-class UserLogin(BaseModel):
-    email: EmailStr
+class UniLogin(BaseModel):
+    name: str
     password: str
 
 class Token(BaseModel):
@@ -72,8 +84,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[str] = None
 
-class Vote(BaseModel):
-    post_id: int
-    dir: conint(le=1)
+
 
 
