@@ -16,6 +16,8 @@ class Course(Base):
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
     owner_id = Column(Integer, ForeignKey('unis.id', ondelete="CASCADE"), nullable=False)
 
+    owner = relationship("Uni")
+
 
 class Uni(Base):
     __tablename__ = "unis"

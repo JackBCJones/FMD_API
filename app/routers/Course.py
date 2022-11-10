@@ -18,6 +18,7 @@ router = APIRouter(
 def get_courses(db: Session = Depends(get_db), 
 limit: int = 10, search: Optional[str] = ""):
 
+    
     courses = db.query(models.Course).filter(models.Course.title.contains(search)).limit(limit).all()
     
 
@@ -29,7 +30,7 @@ limit: int = 10, search: Optional[str] = ""):
     return courses
 
 
-@router.get("/{id}", response_model=schemas.Course)
+@router.get("/{id}", response_model=schemas.CourseOut)
 def get_course(id: int, db: Session = Depends(get_db)):
     
     # results = db.query(models.Course, func.count(models.Vote.course_id).label("votes")).join(
@@ -44,7 +45,7 @@ def get_course(id: int, db: Session = Depends(get_db)):
 
 
 
-@router.get('/owner_id/{id}', response_model=List[schemas.Course])
+@router.get('/owner_id/{id}', response_model=List[schemas.CourseOut])
 def get_course_by_owner_id(id: int, db: Session = Depends(get_db), 
 limit: int = 10, search: Optional[str] = ""):
 

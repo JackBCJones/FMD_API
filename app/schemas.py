@@ -22,10 +22,23 @@ class Course(CourseBase):
     class Config:
         orm_mode = True
 
+
+class UniOut(BaseModel):
+    id: int
+    name: str
+    img: str
+    nickname: str
+    color: str
+    text_color: str
+
+    class Config:
+        orm_mode = True
+
 class CourseOut(CourseBase):
     id: int
     link: str
-    owner_id : int
+    owner_id: int
+    owner: UniOut
     
 
     class Config:
@@ -51,16 +64,7 @@ class CourseCreate(CourseBase):
 
 
 
-class UniOut(BaseModel):
-    id: int
-    name: str
-    img: str
-    nickname: str
-    color: str
-    text_color: str
 
-    class Config:
-        orm_mode = True
 
 class UniCreate(BaseModel):
     name: str
@@ -77,6 +81,12 @@ class UniLogin(BaseModel):
     name: str
     password: str
 
+class UpdateUni(BaseModel):
+    name: str
+    img: str
+    color: str
+    text_color: str
+    nickname: str
 class Token(BaseModel):
     access_token: str
     token_type: str
