@@ -69,6 +69,19 @@ def create_course(course: schemas.CreateCourse, db: Session = Depends(get_db), c
 
     return new_course
 
+@router.post('/courselist', status_code=status.HTTP_201_CREATED)
+def create_courses(course: List[schemas.CreateCourse], db: Session = Depends(get_db), current_uni: int = Depends(oauth2.get_current_user)):
+    
+
+    # print(current_uni.id)
+    for new_courses in course:
+        new_courses = models.Course(owner_id=current_uni.id, **new_courses.dict())
+        db.add(new_courses)
+        db.commit()
+        db.refresh(new_courses)
+
+    return {"message": "Succesful"}
+
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db), current_uni: int = Depends(oauth2.get_current_user)):

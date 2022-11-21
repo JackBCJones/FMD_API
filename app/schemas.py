@@ -59,8 +59,8 @@ class UpdateCourse(BaseModel):
 # can also make use of inheritance 
 # a class that inherites from another has all of its schemas 
 
-class CourseCreate(CourseBase):
-    pass
+class CreateCourses(BaseModel):
+    Course: CreateCourse
 
 
 
