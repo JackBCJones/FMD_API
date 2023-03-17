@@ -16,10 +16,10 @@ router = APIRouter(
 
 @router.get('/', response_model=List[schemas.CourseOut])
 def get_courses(db: Session = Depends(get_db), 
-limit: int = 10, search: Optional[str] = ""):
+search: Optional[str] = ""):
 
-    
-    courses = db.query(models.Course).filter(models.Course.title.contains(search)).limit(limit).all()
+
+    courses = db.query(models.Course).filter(models.Course.title.contains(search)).all()
     
 
     # results = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(
@@ -80,7 +80,7 @@ def create_courses(course: List[schemas.CreateCourse], db: Session = Depends(get
         db.commit()
         db.refresh(new_courses)
 
-    return {"message": "Succesful"}
+    return {"message": "Successful"}
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -106,6 +106,31 @@ def delete_post(id: int, db: Session = Depends(get_db), current_uni: int = Depen
     deleted_course.delete(synchronize_session=False)
     db.commit()
     return f"course with id: {id} has been deleted"
+
+
+@router.delete("/all", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(db: Session = Depends(get_db), current_uni: int = Depends(oauth2.get_current_user)):
+
+    # cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
+    # deleted_post = cursor.fetchone()
+
+    # conn.commit()
+    courses = db.query(models.Course).all()
+
+    
+    # db.refresh(deleted_post)
+    for course in courses: 
+        if course == None:
+            raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, 
+                            detail=f"Error 404 courses not found")
+        
+        if course.owner_id !=  current_uni.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="not authorized to perform requested action")
+
+        
+        course.delete(synchronize_session=False)
+        db.commit()
+        return f"course deleted"
 
 
 
