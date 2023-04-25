@@ -9,6 +9,7 @@ from .routers import Course, uni, auth
 
 # models.Base.metadata.create_all(bind=engine)
 # not using anymore as we now have alembic 
+# hello there
 
 
 app = FastAPI()
